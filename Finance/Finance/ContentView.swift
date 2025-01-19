@@ -82,20 +82,22 @@ struct ContentView: View {
                             .padding(.horizontal)
                             .padding(.top, 24)
                         
-                        List {
-                            ForEach(store.transactions.reversed()) { transaction in
-                                TransactionRowNew(transaction: transaction)
-                                    .listRowSeparator(.hidden)
-                                    .listRowInsets(EdgeInsets())
-                                    .listRowBackground(Color.clear)
-                            }
-                            .onDelete { indexSet in
-                                indexSet.forEach { index in
-                                    store.deleteTransaction(store.transactions[index])
+                        ScrollView {
+                            LazyVStack(spacing: 0, pinnedViews: [.sectionHeaders]) {
+                                ForEach(groupedTransactions, id: \.0) { date, transactions in
+                                    Section(header: dateHeader(for: date)) {
+                                        ForEach(transactions) { transaction in
+                                            TransactionRowNew(transaction: transaction)
+                                                .listRowSeparator(.hidden)
+                                                .listRowInsets(EdgeInsets())
+                                                .listRowBackground(Color.clear)
+                                                .frame(maxWidth: .infinity)
+                                        }
+                                    }
                                 }
                             }
+                            //.padding(.horizontal)
                         }
-                        .listStyle(PlainListStyle())
                         .scrollContentBackground(.hidden)
                     }
                 }
@@ -174,6 +176,43 @@ struct ContentView: View {
         }
         .preferredColorScheme(themeManager.isDarkMode ? .dark : .light)
     }
+    
+    var groupedTransactions: [(Date, [Transaction])] {
+        let calendar = Calendar.current
+        let grouped = Dictionary(grouping: store.transactions.reversed()) { transaction in
+            calendar.startOfDay(for: transaction.date)
+        }
+        return grouped.sorted { $0.key > $1.key }
+    }
+    
+    func dateHeader(for date: Date) -> some View {
+        let calendar = Calendar.current
+        let isToday = calendar.isDateInToday(date)
+        let isYesterday = calendar.isDateInYesterday(date)
+        
+        let dateFormatter = DateFormatter()
+        dateFormatter.locale = Locale(identifier: "ru_RU")
+        dateFormatter.dateFormat = "d MMMM"
+        
+        let dateString: String
+        if isToday {
+            dateString = "Сегодня"
+        } else if isYesterday {
+            dateString = "Вчера"
+        } else {
+            dateString = dateFormatter.string(from: date)
+        }
+        
+        return HStack {
+            Spacer()
+            Text(dateString)
+                .font(.system(size: 15, weight: .semibold))
+                .foregroundColor(.secondary)
+                .padding(.vertical, 8)
+            Spacer()
+        }
+        .background(Color(.systemGroupedBackground))
+    }
 }
 
 struct ActionButton: View {
@@ -247,7 +286,7 @@ struct TransactionRowNew: View {
             .padding(.horizontal)
             .background(Color.cardBackground)
             .cornerRadius(12)
-            .standardShadow()
+            //.standardShadow()
             .padding(.horizontal)
             .padding(.vertical, 4)
             .onTapGesture {

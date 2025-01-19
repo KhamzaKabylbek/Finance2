@@ -6,8 +6,8 @@ class AuthViewModel: ObservableObject {
     @Published var isLoading = false
     
     // Тестовые данные
-    private let testEmail = "t@example.com"
-    private let testPassword = "p123456"
+    private let testEmail = "t1@example.com"
+    private let testPassword = "t1@example.com"
     
     func login(email: String, password: String) {
         isLoading = true
