@@ -139,6 +139,8 @@ struct GoalRow: View {
     let goal: FinancialGoal
     @State private var showingEditSheet = false
     @State private var showingDeleteAlert = false
+    @State private var showingAddFundsSheet = false
+    @State private var amountToAdd = ""
     
     var body: some View {
         VStack(alignment: .leading, spacing: 8) {
@@ -152,6 +154,9 @@ struct GoalRow: View {
                 }
                 Spacer()
                 Menu {
+                    Button(action: { showingAddFundsSheet = true }) {
+                        Label("Пополнить", systemImage: "plus.circle")
+                    }
                     Button(action: { showingEditSheet = true }) {
                         Label("Изменить", systemImage: "pencil")
                     }
@@ -168,7 +173,7 @@ struct GoalRow: View {
                 Text("\(Int(goal.progress * 100))%")
                     .font(.caption)
                 Spacer()
-                Text("\(goal.currentAmount, specifier: "%.0f") / \(goal.targetAmount, specifier: "%.0f")")
+                Text("\(store.formatAmount(goal.currentAmount)) / \(store.formatAmount(goal.targetAmount))")
                     .font(.caption)
             }
             
@@ -196,13 +201,43 @@ struct GoalRow: View {
         .sheet(isPresented: $showingEditSheet) {
             EditGoalView(goal: goal)
         }
+        .sheet(isPresented: $showingAddFundsSheet) {
+            NavigationView {
+                Form {
+                    Section(header: Text("Добавить средства")) {
+                        TextField("Сумма", text: $amountToAdd)
+                            .keyboardType(.decimalPad)
+                    }
+                    
+                    Section(footer: Text("Средства будут добавлены к текущему прогрессу цели")) {
+                        Button(action: addFunds) {
+                            Text("Пополнить")
+                                .frame(maxWidth: .infinity)
+                                .foregroundColor(.blue)
+                        }
+                    }
+                }
+                .navigationTitle("Пополнение цели")
+                .navigationBarItems(
+                    trailing: Button("Готово") {
+                        showingAddFundsSheet = false
+                    }
+                )
+            }
+        }
         .alert("Удалить цель?", isPresented: $showingDeleteAlert) {
             Button("Отмена", role: .cancel) { }
             Button("Удалить", role: .destructive) {
                 store.deleteGoal(goal)
             }
-        } message: {
-            Text("Это действие нельзя отменить")
+        }
+    }
+    
+    private func addFunds() {
+        if let amount = Double(amountToAdd), amount > 0 {
+            store.addFundsToGoal(goal, amount: amount)
+            amountToAdd = ""
+            showingAddFundsSheet = false
         }
     }
     
@@ -281,28 +316,46 @@ struct EditGoalView: View {
 struct AddGoalView: View {
     @Environment(\.dismiss) var dismiss
     @EnvironmentObject var store: TransactionStore
+    
     @State private var name = ""
     @State private var targetAmount = ""
     @State private var deadline = Date()
     @State private var selectedCategory: Category?
+    @State private var autoSavePercentage = 10.0
+    @State private var milestoneNotifications = true
     
-    var incomeCategories: [Category] {
+    private var incomeCategories: [Category] {
         store.categories.filter { $0.type == .income }
     }
     
     var body: some View {
         NavigationView {
             Form {
-                TextField("Название цели", text: $name)
-                TextField("Целевая сумма", text: $targetAmount)
-                    .keyboardType(.decimalPad)
-                DatePicker("Срок", selection: $deadline, displayedComponents: .date)
+                Section(header: Text("Основная информация")) {
+                    TextField("Название цели", text: $name)
+                    TextField("Целевая сумма", text: $targetAmount)
+                        .keyboardType(.decimalPad)
+                    DatePicker("Срок", selection: $deadline, displayedComponents: .date)
+                }
                 
-                Picker("Источник дохода", selection: $selectedCategory) {
-                    Text("Без категории").tag(nil as Category?)
-                    ForEach(incomeCategories) { category in
-                        Text(category.name).tag(category as Category?)
+                Section(header: Text("Источник накопления")) {
+                    Picker("Категория дохода", selection: $selectedCategory) {
+                        Text("Без категории").tag(nil as Category?)
+                        ForEach(incomeCategories) { category in
+                            Text(category.name).tag(category as Category?)
+                        }
                     }
+                    
+                    if selectedCategory != nil {
+                        VStack(alignment: .leading) {
+                            Text("Откладывать от дохода: \(Int(autoSavePercentage))%")
+                            Slider(value: $autoSavePercentage, in: 1...100, step: 1)
+                        }
+                    }
+                }
+                
+                Section(header: Text("Уведомления")) {
+                    Toggle("Уведомления о достижениях", isOn: $milestoneNotifications)
                 }
             }
             .navigationTitle("Новая цель")
@@ -313,11 +366,19 @@ struct AddGoalView: View {
                         let goal = FinancialGoal(
                             name: name,
                             targetAmount: amount,
-                            currentAmount: 0,
                             deadline: deadline,
-                            category: selectedCategory
+                            category: selectedCategory,
+                            autoSavePercentage: autoSavePercentage,
+                            milestoneNotifications: milestoneNotifications
                         )
                         store.addGoal(goal)
+                        
+                        // Настраиваем уведомления
+                        if milestoneNotifications {
+                            NotificationManager.shared.scheduleDeadlineReminder(for: goal)
+                            NotificationManager.shared.scheduleWeeklyProgressNotification(for: goal)
+                        }
+                        
                         dismiss()
                     }
                 }

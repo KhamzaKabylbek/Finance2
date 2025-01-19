@@ -82,23 +82,35 @@ struct ContentView: View {
                             .padding(.horizontal)
                             .padding(.top, 24)
                         
-                        ScrollView {
-                            LazyVStack(spacing: 0, pinnedViews: [.sectionHeaders]) {
-                                ForEach(groupedTransactions, id: \.0) { date, transactions in
-                                    Section(header: dateHeader(for: date)) {
-                                        ForEach(transactions) { transaction in
-                                            TransactionRowNew(transaction: transaction)
-                                                .listRowSeparator(.hidden)
-                                                .listRowInsets(EdgeInsets())
-                                                .listRowBackground(Color.clear)
-                                                .frame(maxWidth: .infinity)
-                                        }
+                        List {
+                            ForEach(groupedTransactions, id: \.0) { date, transactions in
+                                Section {
+                                    ForEach(transactions) { transaction in
+                                        TransactionRowNew(transaction: transaction)
+                                            .listRowSeparator(.hidden)
+                                            .listRowInsets(EdgeInsets())
+                                            .listRowBackground(Color.clear)
+                                            .swipeActions(edge: .trailing, allowsFullSwipe: true) {
+                                                Button(role: .destructive) {
+                                                    withAnimation {
+                                                        store.deleteTransaction(transaction)
+                                                    }
+                                                } label: {
+                                                    Label("Удалить", systemImage: "trash")
+                                                }
+                                            }
                                     }
+                                } header: {
+                                    dateHeader(for: date)
+                                        .listRowInsets(EdgeInsets())
+                                        .listSectionSeparator(.hidden)
+                                        .padding(.top, -12)
                                 }
                             }
-                            //.padding(.horizontal)
                         }
+                        .listStyle(PlainListStyle())
                         .scrollContentBackground(.hidden)
+                        .background(Color.clear)
                     }
                 }
                 
@@ -203,15 +215,21 @@ struct ContentView: View {
             dateString = dateFormatter.string(from: date)
         }
         
-        return HStack {
-            Spacer()
-            Text(dateString)
-                .font(.system(size: 15, weight: .semibold))
-                .foregroundColor(.secondary)
-                .padding(.vertical, 8)
-            Spacer()
+        return ZStack {
+            Color.clear
+            HStack {
+                Spacer()
+                Text(dateString)
+                    .font(.system(size: 13, weight: .medium))
+                    .foregroundColor(.secondary)
+                    .padding(.vertical, 2)
+                    .padding(.horizontal, 12)
+                    .background(Color(.systemGray6))
+                    .cornerRadius(12)
+                Spacer()
+            }
         }
-        .background(Color(.systemGroupedBackground))
+        .padding(.bottom, 4)
     }
 }
 

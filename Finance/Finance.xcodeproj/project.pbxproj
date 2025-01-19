@@ -8,6 +8,7 @@
 
 /* Begin PBXBuildFile section */
 		BB023B992D3D6D36000C297F /* Color+Extensions.swift in Sources */ = {isa = PBXBuildFile; fileRef = BB023B982D3D6D36000C297F /* Color+Extensions.swift */; };
+		BB023B9E2D3D7F91000C297F /* NotificationManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = BB023B9C2D3D7F91000C297F /* NotificationManager.swift */; };
 		BB20F00C2D397A26005BEA39 /* FinanceApp.swift in Sources */ = {isa = PBXBuildFile; fileRef = BB20F00B2D397A26005BEA39 /* FinanceApp.swift */; };
 		BB20F00E2D397E42005BEA39 /* DebtorsView.swift in Sources */ = {isa = PBXBuildFile; fileRef = BB20F00D2D397E42005BEA39 /* DebtorsView.swift */; };
 		BB20F0102D397E4C005BEA39 /* AddDebtorView.swift in Sources */ = {isa = PBXBuildFile; fileRef = BB20F00F2D397E4C005BEA39 /* AddDebtorView.swift */; };
@@ -45,6 +46,7 @@
 
 /* Begin PBXFileReference section */
 		BB023B982D3D6D36000C297F /* Color+Extensions.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "Color+Extensions.swift"; sourceTree = "<group>"; };
+		BB023B9C2D3D7F91000C297F /* NotificationManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NotificationManager.swift; sourceTree = "<group>"; };
 		BB20F00B2D397A26005BEA39 /* FinanceApp.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FinanceApp.swift; sourceTree = "<group>"; };
 		BB20F00D2D397E42005BEA39 /* DebtorsView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DebtorsView.swift; sourceTree = "<group>"; };
 		BB20F00F2D397E4C005BEA39 /* AddDebtorView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AddDebtorView.swift; sourceTree = "<group>"; };
@@ -92,6 +94,14 @@
 /* End PBXFrameworksBuildPhase section */
 
 /* Begin PBXGroup section */
+		BB023B9D2D3D7F91000C297F /* Managers */ = {
+			isa = PBXGroup;
+			children = (
+				BB023B9C2D3D7F91000C297F /* NotificationManager.swift */,
+			);
+			path = Managers;
+			sourceTree = "<group>";
+		};
 		BB9958C52D091C5B0048F4A1 = {
 			isa = PBXGroup;
 			children = (
@@ -111,6 +121,7 @@
 		BB9958D02D091C5B0048F4A1 /* Finance */ = {
 			isa = PBXGroup;
 			children = (
+				BB023B9D2D3D7F91000C297F /* Managers */,
 				BBDF4CF42D3BCBD900CC62C7 /* Utils */,
 				BBDF4CF12D3BCAFA00CC62C7 /* ViewModelsAuth */,
 				BBDF4CEE2D3BCAED00CC62C7 /* ModelsUser */,
@@ -340,6 +351,7 @@
 				BBA557992D0B9791001A1AF4 /* TransactionStore.swift in Sources */,
 				BB20F0102D397E4C005BEA39 /* AddDebtorView.swift in Sources */,
 				BBB9373A2D2BDC9D00DA723A /* AIChatView.swift in Sources */,
+				BB023B9E2D3D7F91000C297F /* NotificationManager.swift in Sources */,
 				BBDF4CF52D3BCBD900CC62C7 /* ValidationManager.swift in Sources */,
 				BB64BAC62D3BD69D00274255 /* CustomTextField.swift in Sources */,
 				BB20F0122D397E5B005BEA39 /* DebtorStore.swift in Sources */,
