@@ -2,12 +2,13 @@ import SwiftUI
 
 struct EditDebtorView: View {
     @Environment(\.dismiss) var dismiss
-    @ObservedObject var store: DebtorStore
     let debtor: Debtor
+    @ObservedObject var store: DebtorStore
     
     @State private var name: String
     @State private var phoneNumber: String
     @State private var amount: String
+    @State private var currency: Settings.Currency
     @State private var note: String
     @State private var deadline: Date
     @State private var hasDeadline: Bool
@@ -18,7 +19,8 @@ struct EditDebtorView: View {
         self.store = store
         _name = State(initialValue: debtor.name)
         _phoneNumber = State(initialValue: debtor.phoneNumber)
-        _amount = State(initialValue: String(debtor.amount))
+        _amount = State(initialValue: String(format: "%.2f", debtor.amount))
+        _currency = State(initialValue: debtor.currency)
         _note = State(initialValue: debtor.note)
         _deadline = State(initialValue: debtor.deadline ?? Date())
         _hasDeadline = State(initialValue: debtor.deadline != nil)
@@ -28,34 +30,50 @@ struct EditDebtorView: View {
     var body: some View {
         NavigationView {
             Form {
-                TextField("Имя", text: $name)
-                TextField("Телефон", text: $phoneNumber)
-                    .keyboardType(.phonePad)
-                TextField("Сумма", text: $amount)
-                    .keyboardType(.decimalPad)
-                TextField("Заметка", text: $note)
-                
-                Toggle("Указать срок", isOn: $hasDeadline)
-                if hasDeadline {
-                    DatePicker("Срок", selection: $deadline, displayedComponents: .date)
+                Section(header: Text("Основная информация")) {
+                    TextField("Имя", text: $name)
+                    TextField("Телефон", text: $phoneNumber)
+                        .keyboardType(.phonePad)
                 }
                 
-                Toggle("Оплачено", isOn: $isPaid)
+                Section(header: Text("Сумма")) {
+                    HStack {
+                        TextField("Сумма", text: $amount)
+                            .keyboardType(.decimalPad)
+                        
+                        Picker("Валюта", selection: $currency) {
+                            ForEach(Settings.Currency.allCases, id: \.self) { currency in
+                                Text("\(currency.name) (\(currency.rawValue))")
+                                    .tag(currency)
+                            }
+                        }
+                        .pickerStyle(.menu)
+                        .labelsHidden()
+                    }
+                }
+                
+                Section(header: Text("Дополнительно")) {
+                    TextField("Заметка", text: $note)
+                    Toggle("Указать срок", isOn: $hasDeadline)
+                    if hasDeadline {
+                        DatePicker("Срок", selection: $deadline, displayedComponents: .date)
+                    }
+                    Toggle("Оплачено", isOn: $isPaid)
+                }
             }
-            .navigationTitle("Изменить должника")
+            .navigationTitle("Редактировать")
             .navigationBarItems(
                 leading: Button("Отмена") { dismiss() },
                 trailing: Button("Сохранить") {
                     if let amount = Double(amount), !name.isEmpty {
-                        let updatedDebtor = Debtor(
-                            id: debtor.id,
-                            name: name,
-                            phoneNumber: phoneNumber,
-                            amount: amount,
-                            note: note,
-                            deadline: hasDeadline ? deadline : nil,
-                            isPaid: isPaid
-                        )
+                        var updatedDebtor = debtor
+                        updatedDebtor.name = name
+                        updatedDebtor.phoneNumber = phoneNumber
+                        updatedDebtor.amount = amount
+                        updatedDebtor.currency = currency
+                        updatedDebtor.note = note
+                        updatedDebtor.deadline = hasDeadline ? deadline : nil
+                        updatedDebtor.isPaid = isPaid
                         store.updateDebtor(updatedDebtor)
                         dismiss()
                     }
