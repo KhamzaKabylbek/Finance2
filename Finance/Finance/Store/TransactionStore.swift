@@ -75,10 +75,10 @@ class TransactionStore: ObservableObject {
         numberFormatter.maximumFractionDigits = 2
         
         if let formattedAmount = numberFormatter.string(from: NSNumber(value: amount)) {
-            return "\(settings.currency.rawValue)\(formattedAmount)"
+            return "\(formattedAmount) \(settings.currency.rawValue)"
         }
         
-        return "\(settings.currency.rawValue)0.00"
+        return "0.00 \(settings.currency.rawValue)"
     }
     
     func updateCurrency(_ currency: Currency) {
