@@ -30,6 +30,33 @@ class TransactionStore: ObservableObject {
     // Транзакции
     func addTransaction(_ transaction: Transaction) {
         transactions.append(transaction)
+        
+        // Если это доходная транзакция, проверяем связанные цели
+        if transaction.type == .income {
+            updateRelatedGoals(for: transaction)
+        }
+        
+        saveData()
+    }
+    
+    private func updateRelatedGoals(for transaction: Transaction) {
+        for index in settings.financialGoals.indices {
+            var goal = settings.financialGoals[index]
+            
+            // Проверяем, связана ли цель с категорией транзакции
+            if let goalCategory = goal.category, goalCategory.id == transaction.category.id {
+                // Вычисляем сумму для добавления к цели
+                let amountToAdd = transaction.amount * (goal.autoSavePercentage / 100.0)
+                goal.addProgress(amountToAdd)
+                settings.financialGoals[index] = goal
+                
+                // Если это первая транзакция для цели, настраиваем уведомления
+                if goal.transactions.count == 1 {
+                    NotificationManager.shared.scheduleDeadlineReminder(for: goal)
+                    NotificationManager.shared.scheduleWeeklyProgressNotification(for: goal)
+                }
+            }
+        }
         saveData()
     }
     
@@ -65,6 +92,37 @@ class TransactionStore: ObservableObject {
     func deleteGoal(_ goal: FinancialGoal) {
         settings.financialGoals.removeAll { $0.id == goal.id }
         saveData()
+    }
+    
+    func addFundsToGoal(_ goal: FinancialGoal, amount: Double) {
+        if let index = settings.financialGoals.firstIndex(where: { $0.id == goal.id }) {
+            var updatedGoal = settings.financialGoals[index]
+            updatedGoal.addProgress(amount)
+            settings.financialGoals[index] = updatedGoal
+            
+            // Создаем транзакцию для отслеживания
+            let goalCategory = Category(
+                id: UUID(),
+                name: "Пополнение цели",
+                icon: "target",
+                color: "#007AFF",
+                type: .expense
+            )
+            
+            let transaction = Transaction(
+                id: UUID(),
+                amount: amount,
+                category: goalCategory,
+                date: Date(),
+                note: "Пополнение цели: \(goal.name)",
+                type: .expense,
+                isRecurring: false,
+                recurringInterval: nil
+            )
+            addTransaction(transaction)
+            
+            saveData()
+        }
     }
     
     // Форматирование и настройки
