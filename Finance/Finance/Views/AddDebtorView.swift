@@ -6,6 +6,7 @@ struct AddDebtorView: View {
     @State private var name = ""
     @State private var phoneNumber = ""
     @State private var amount = ""
+    @State private var currency: Settings.Currency = .kzt
     @State private var note = ""
     @State private var deadline: Date = Date()
     @State private var hasDeadline = false
@@ -13,16 +14,34 @@ struct AddDebtorView: View {
     var body: some View {
         NavigationView {
             Form {
-                TextField("Имя", text: $name)
-                TextField("Телефон", text: $phoneNumber)
-                    .keyboardType(.phonePad)
-                TextField("Сумма", text: $amount)
-                    .keyboardType(.decimalPad)
-                TextField("Заметка", text: $note)
+                Section(header: Text("Основная информация")) {
+                    TextField("Имя", text: $name)
+                    TextField("Телефон", text: $phoneNumber)
+                        .keyboardType(.phonePad)
+                }
                 
-                Toggle("Указать срок", isOn: $hasDeadline)
-                if hasDeadline {
-                    DatePicker("Срок", selection: $deadline, displayedComponents: .date)
+                Section(header: Text("Сумма")) {
+                    HStack {
+                        TextField("Сумма", text: $amount)
+                            .keyboardType(.decimalPad)
+                        
+                        Picker("Валюта", selection: $currency) {
+                            ForEach(Settings.Currency.allCases, id: \.self) { currency in
+                                Text("\(currency.name) (\(currency.rawValue))")
+                                    .tag(currency)
+                            }
+                        }
+                        .pickerStyle(.menu)
+                        .labelsHidden()
+                    }
+                }
+                
+                Section(header: Text("Дополнительно")) {
+                    TextField("Заметка", text: $note)
+                    Toggle("Указать срок", isOn: $hasDeadline)
+                    if hasDeadline {
+                        DatePicker("Срок", selection: $deadline, displayedComponents: .date)
+                    }
                 }
             }
             .navigationTitle("Новый должник")
@@ -34,6 +53,7 @@ struct AddDebtorView: View {
                             name: name,
                             phoneNumber: phoneNumber,
                             amount: amount,
+                            currency: currency,
                             note: note,
                             deadline: hasDeadline ? deadline : nil
                         )

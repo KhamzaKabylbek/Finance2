@@ -68,7 +68,7 @@ struct DebtorRow: View {
                         Text(debtor.name)
                             .font(.headline)
                         Spacer()
-                        Text(String(format: "%.2f ₸", debtor.amount))
+                        Text(debtor.formattedAmount)
                             .font(.system(.headline, design: .rounded))
                             .foregroundColor(debtor.isPaid ? .green : .red)
                     }
