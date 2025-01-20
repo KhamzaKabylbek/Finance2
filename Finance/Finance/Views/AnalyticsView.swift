@@ -256,8 +256,12 @@ struct AnalyticsView: View {
                 }
             }
             .navigationTitle("Аналитика")
+            .navigationBarTitleDisplayMode(.inline)
             .navigationBarItems(
-                leading: Button("Закрыть") { dismiss() }
+                leading: Button(action: dismiss.callAsFunction) {
+                    Image(systemName: "xmark")
+                        .foregroundColor(.primary)
+                }
             )
             .sheet(isPresented: $showingFilters) {
                 FilterView()
