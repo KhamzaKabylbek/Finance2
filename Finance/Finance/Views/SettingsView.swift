@@ -83,7 +83,13 @@ struct SettingsView: View {
                 }
             }
             .navigationTitle("Настройки")
-            .navigationBarItems(leading: Button("Закрыть") { presentationMode.wrappedValue.dismiss() })
+            .navigationBarTitleDisplayMode(.inline)
+            .navigationBarItems(
+                leading: Button(action: { presentationMode.wrappedValue.dismiss() }) {
+                    Image(systemName: "xmark")
+                        .foregroundColor(.primary)
+                }
+            )
             .sheet(isPresented: $showingAddGoal) {
                 AddGoalView()
             }

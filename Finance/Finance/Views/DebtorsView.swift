@@ -21,8 +21,9 @@ struct DebtorsView: View {
         .navigationBarTitleDisplayMode(.inline)
         .toolbar {
             ToolbarItem(placement: .navigationBarLeading) {
-                Button("Закрыть") {
-                    dismiss()
+                Button(action: dismiss.callAsFunction) {
+                    Image(systemName: "xmark")
+                        .foregroundColor(.primary)
                 }
             }
             

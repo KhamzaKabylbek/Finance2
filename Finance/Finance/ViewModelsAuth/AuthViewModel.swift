@@ -13,7 +13,7 @@ class AuthViewModel: ObservableObject {
         isLoading = true
         
         // Имитация сетевого запроса
-        DispatchQueue.main.asyncAfter(deadline: .now() + 1.5) { [weak self] in
+        DispatchQueue.main.asyncAfter(deadline: .now() + 1.0) { [weak self] in
             guard let self = self else { return }
             
             if email == self.testEmail && password == self.testPassword {
