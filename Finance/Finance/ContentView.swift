@@ -17,6 +17,7 @@ struct ContentView: View {
     @State private var showingAIAssistant = false
     @EnvironmentObject private var themeManager: ThemeManager
     @State private var showingDebtors = false
+    @State private var showingReceiptScanner = false
     
     var body: some View {
         NavigationView {
@@ -135,24 +136,58 @@ struct ContentView: View {
                     }
                 }
             }
-            .navigationBarItems(
-                leading: Button(action: { showingAnalytics = true }) {
-                    HStack(spacing: 8) {
-                        Image(systemName: "chart.pie.fill")
-                        Text("Аналитика")
+            .toolbar {
+                ToolbarItem(placement: .navigationBarLeading) {
+                    Button(action: { showingAnalytics = true }) {
+                        HStack(spacing: 8) {
+                            Image(systemName: "chart.pie.fill")
+                            Text("Аналитика")
+                        }
+                        .padding(.horizontal, 12)
+                        .padding(.vertical, 6)
+                        .background(Color.accent.opacity(0.1))
+                        .cornerRadius(20)
+                        .foregroundColor(.accent)
                     }
-            
-                    .padding(.horizontal, 12)
-                    .padding(.vertical, 6)
-                    .background(Color.accent.opacity(0.1))
-                    .cornerRadius(20)
-                    .foregroundColor(.accent)
-                },
-                trailing: Button(action: { showingSettings = true }) {
-                    Image(systemName: "gear")
-                        .foregroundColor(.primaryText)
                 }
-            )
+                
+                ToolbarItem(placement: .navigationBarTrailing) {
+                    HStack(spacing: 4) {
+                        Button(action: { showingReceiptScanner = true }) {
+                            HStack() {
+                                Image(systemName: "doc.text.viewfinder")
+                            }
+                            .padding(.horizontal, 6)
+                            .padding(.vertical, 6)
+                            .background(Color.accent.opacity(0.1))
+                            .cornerRadius(20)
+                            .foregroundColor(.accent)
+                        }
+                        
+                        Button(action: { showingDebtors = true }) {
+                            HStack() {
+                                Image(systemName: "person.badge.clock")
+                            }
+                            .padding(.horizontal, 6)
+                            .padding(.vertical, 6)
+                            .background(Color.accent.opacity(0.1))
+                            .cornerRadius(20)
+                            .foregroundColor(.accent)
+                        }
+                        
+                        Button(action: { showingSettings = true }) {
+                            HStack() {
+                                Image(systemName: "gear")
+                            }
+                            .padding(.horizontal, 6)
+                            .padding(.vertical, 6)
+                            .background(Color.accent.opacity(0.1))
+                            .cornerRadius(20)
+                            .foregroundColor(.accent)
+                        }
+                    }
+                }
+            }
             .sheet(isPresented: $showingAddTransaction) {
                 AddTransactionView(type: selectedTransactionType)
                     .environmentObject(store)
@@ -165,25 +200,16 @@ struct ContentView: View {
                 SettingsView(goalStore: GoalStore())
                     .environmentObject(store)
             }
-            .sheet(isPresented: $showingAIAssistant) {
-                AIChatView()
-            }
-            .toolbar {
-                ToolbarItem(placement: .navigationBarTrailing) {
-                    Button(action: { showingDebtors = true }) {
-                        Image(systemName: "person.badge.clock")
-                    }
-                    .padding(.horizontal, 5)
-                    .padding(.vertical, 5)
-                    .background(Color.accent.opacity(0.1))
-                    .cornerRadius(40)
-                    .foregroundColor(.accent)
-                }
-            }
             .sheet(isPresented: $showingDebtors) {
                 NavigationView {
                     DebtorsView()
                 }
+            }
+            .sheet(isPresented: $showingReceiptScanner) {
+                ReceiptScannerView()
+            }
+            .sheet(isPresented: $showingAIAssistant) {
+                AIChatView()
             }
         }
         .preferredColorScheme(themeManager.isDarkMode ? .dark : .light)
@@ -321,8 +347,8 @@ struct TransactionRowNew: View {
         return formatter.string(from: date)
     }
 }
-
-#Preview {
-    ContentView()
-        .environmentObject(TransactionStore())
-}
+//
+//#Preview {
+//    ContentView()
+//        //.environmentObject(TransactionStore())
+//}

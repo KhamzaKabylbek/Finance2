@@ -2,7 +2,7 @@ import SwiftUI
 import PhotosUI
 
 struct ChatMessage: Identifiable, Codable {
-    let id = UUID()
+    var id = UUID()
     let text: String
     let isUser: Bool
     let timestamp: Date
