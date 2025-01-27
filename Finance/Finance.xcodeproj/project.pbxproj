@@ -16,6 +16,7 @@
 		BB20F0142D397E82005BEA39 /* Debtor.swift in Sources */ = {isa = PBXBuildFile; fileRef = BB20F0132D397E82005BEA39 /* Debtor.swift */; };
 		BB20F0162D397F71005BEA39 /* EditDebtorView.swift in Sources */ = {isa = PBXBuildFile; fileRef = BB20F0152D397F71005BEA39 /* EditDebtorView.swift */; };
 		BB2B8CE12D3C0E13001EB273 /* ForgotPasswordView.swift in Sources */ = {isa = PBXBuildFile; fileRef = BB2B8CE02D3C0E11001EB273 /* ForgotPasswordView.swift */; };
+		BB4932B32D476F2100F1B188 /* ReceiptScannerView.swift in Sources */ = {isa = PBXBuildFile; fileRef = BB4932B22D476F2100F1B188 /* ReceiptScannerView.swift */; };
 		BB64BAC62D3BD69D00274255 /* CustomTextField.swift in Sources */ = {isa = PBXBuildFile; fileRef = BB64BAC52D3BD69900274255 /* CustomTextField.swift */; };
 		BB9958D42D091C5B0048F4A1 /* ContentView.swift in Sources */ = {isa = PBXBuildFile; fileRef = BB9958D32D091C5B0048F4A1 /* ContentView.swift */; };
 		BB9958D62D091C5C0048F4A1 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = BB9958D52D091C5C0048F4A1 /* Assets.xcassets */; };
@@ -54,6 +55,7 @@
 		BB20F0132D397E82005BEA39 /* Debtor.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Debtor.swift; sourceTree = "<group>"; };
 		BB20F0152D397F71005BEA39 /* EditDebtorView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = EditDebtorView.swift; sourceTree = "<group>"; };
 		BB2B8CE02D3C0E11001EB273 /* ForgotPasswordView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ForgotPasswordView.swift; sourceTree = "<group>"; };
+		BB4932B22D476F2100F1B188 /* ReceiptScannerView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ReceiptScannerView.swift; sourceTree = "<group>"; };
 		BB64BAC52D3BD69900274255 /* CustomTextField.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CustomTextField.swift; sourceTree = "<group>"; };
 		BB9958CE2D091C5B0048F4A1 /* Finance.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = Finance.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		BB9958D32D091C5B0048F4A1 /* ContentView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ContentView.swift; sourceTree = "<group>"; };
@@ -175,6 +177,7 @@
 		BB9958EA2D091DD50048F4A1 /* Views */ = {
 			isa = PBXGroup;
 			children = (
+				BB4932B22D476F2100F1B188 /* ReceiptScannerView.swift */,
 				BB20F0152D397F71005BEA39 /* EditDebtorView.swift */,
 				BB20F00F2D397E4C005BEA39 /* AddDebtorView.swift */,
 				BB20F00D2D397E42005BEA39 /* DebtorsView.swift */,
@@ -342,6 +345,7 @@
 				BB9958EB2D091DD50048F4A1 /* AddTransactionView.swift in Sources */,
 				BB9958ED2D0921AD0048F4A1 /* AnalyticsView.swift in Sources */,
 				BBB9373E2D2BDD6E00DA723A /* GeminiService.swift in Sources */,
+				BB4932B32D476F2100F1B188 /* ReceiptScannerView.swift in Sources */,
 				BBDF4CEF2D3BCAED00CC62C7 /* User.swift in Sources */,
 				BBDF4CEB2D3BCADF00CC62C7 /* LoginView.swift in Sources */,
 				BBDF4CEC2D3BCADF00CC62C7 /* RegisterView.swift in Sources */,
@@ -505,6 +509,7 @@
 				DEVELOPMENT_TEAM = 7MXGHGHD2W;
 				ENABLE_PREVIEWS = YES;
 				GENERATE_INFOPLIST_FILE = YES;
+				INFOPLIST_KEY_NSCameraUsageDescription = "";
 				INFOPLIST_KEY_UIApplicationSceneManifest_Generation = YES;
 				INFOPLIST_KEY_UIApplicationSupportsIndirectInputEvents = YES;
 				INFOPLIST_KEY_UILaunchScreen_Generation = YES;
@@ -534,6 +539,7 @@
 				DEVELOPMENT_TEAM = 7MXGHGHD2W;
 				ENABLE_PREVIEWS = YES;
 				GENERATE_INFOPLIST_FILE = YES;
+				INFOPLIST_KEY_NSCameraUsageDescription = "";
 				INFOPLIST_KEY_UIApplicationSceneManifest_Generation = YES;
 				INFOPLIST_KEY_UIApplicationSupportsIndirectInputEvents = YES;
 				INFOPLIST_KEY_UILaunchScreen_Generation = YES;

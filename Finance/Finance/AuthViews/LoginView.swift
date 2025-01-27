@@ -7,6 +7,7 @@ struct LoginView: View {
     @State private var showForgotPassword = false
     @State private var emailError: String? = nil
     @State private var passwordError: String? = nil
+    @State private var rotationY: Double = 0
     @EnvironmentObject var authViewModel: AuthViewModel
     
     var body: some View {
@@ -14,10 +15,11 @@ struct LoginView: View {
             
             Image(systemName: "dollarsign.circle")
                 .resizable()
-                .frame(width: 100, height: 100)
+                .frame(width: 150, height: 150)
                 .foregroundColor(Color.primary) // Changed from Color(white: 0.2)
                 .symbolRenderingMode(.monochrome)
                 .padding(.top, 40)
+                
                 
             Text("Добро пожаловать")
                 .font(.system(size: 28, weight: .bold))
