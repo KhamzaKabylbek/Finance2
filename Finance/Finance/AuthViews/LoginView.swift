@@ -33,14 +33,14 @@ struct LoginView: View {
                 text: $email,
                 isSecure: false,
                 errorMessage: emailError
-            )
+            ).font(.system(size: 22))
             
             CustomTextField(
                 title: "Пароль",
                 text: $password,
                 isSecure: true,
                 errorMessage: passwordError
-            )
+            ).font(.system(size: 22))
             
             Button(action: {
                 showForgotPassword = true

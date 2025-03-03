@@ -27,21 +27,21 @@ struct RegisterView: View {
                     text: $email,
                     isSecure: false,
                     errorMessage: emailError
-                )
+                ).font(.system(size: 22))
                 
                 CustomTextField(
                     title: "Пароль",
                     text: $password,
                     isSecure: true,
                     errorMessage: passwordError
-                )
+                ).font(.system(size: 22))
                 
                 CustomTextField(
                     title: "Подтвердите пароль",
                     text: $confirmPassword,
                     isSecure: true,
                     errorMessage: confirmPasswordError
-                )
+                ).font(.system(size: 22))
                 
                 VStack(spacing: 16) {
                     Button(action: validateAndRegister) {
