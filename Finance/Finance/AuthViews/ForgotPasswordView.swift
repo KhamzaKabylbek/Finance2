@@ -37,7 +37,7 @@ struct ForgotPasswordView: View {
                     text: $email,
                     isSecure: false,
                     errorMessage: emailError
-                )
+                ).font(.system(size: 22))
                 
                 Button(action: validateAndSendResetLink) {
                     ZStack {

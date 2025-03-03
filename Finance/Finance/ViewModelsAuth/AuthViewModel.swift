@@ -23,7 +23,7 @@ class AuthViewModel: ObservableObject {
             
             self.isLoading = false
         }
-    } 
+    }
     
     func register(email: String, password: String) {
         isLoading = true

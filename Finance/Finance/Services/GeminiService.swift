@@ -1,7 +1,7 @@
 import Foundation
 
 class GeminiService {
-    private let apiKey = "AIzaSyACoYC9FFJMPirwxQV85iKzAyJozjOWXyM"
+    private let apiKey = "AIzaSyAzapi8k6IId2FnyBdPeN60NnYtLF5aXlk"
     private let baseURL = "https://generativelanguage.googleapis.com/v1beta/models/gemini-1.5-flash:generateContent"
     
     func generateResponse(for message: String) async throws -> String {
