@@ -24,9 +24,25 @@ class GoalNotificationManager {
         UNUserNotificationCenter.current().add(request)
     }
     
+    func notifyGoalAchieved(for goal: FinancialGoal) {
+        let content = UNMutableNotificationContent()
+        content.title = "Поздравляем!"
+        content.body = "Вы достигли своей цели: \(goal.name). Отличная работа!"
+        content.sound = .default
+        
+        let trigger = UNTimeIntervalNotificationTrigger(timeInterval: 1, repeats: false)
+        let request = UNNotificationRequest(identifier: "goal_achieved_\(goal.id.uuidString)", content: content, trigger: trigger)
+        
+        UNUserNotificationCenter.current().add(request) { error in
+            if let error = error {
+                print("Failed to schedule goal achieved notification: \(error)")
+            }
+        }
+    }
+    
     private func formatDate(_ date: Date) -> String {
         let formatter = DateFormatter()
         formatter.dateStyle = .medium
         return formatter.string(from: date)
     }
-} 
+}

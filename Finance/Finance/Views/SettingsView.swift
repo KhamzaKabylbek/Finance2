@@ -11,6 +11,7 @@ struct SettingsView: View {
     @State private var showingAddGoal = false
     @State private var showingShareSheet = false
     @State private var showingLogoutAlert = false // Добавляем состояние для алерта
+    @State private var pushNotificationsEnabled = false
 
     @State private var csvString: String = ""
     @EnvironmentObject private var themeManager: ThemeManager
@@ -44,6 +45,10 @@ struct SettingsView: View {
                     .onChange(of: selectedCurrency) { oldValue, newValue in
                         store.updateCurrency(newValue)
                     }
+                }
+
+                Section("Уведомление") {
+                    Toggle("Уведомление о финансовых целях", isOn: $pushNotificationsEnabled)
                 }
                 
                 // Тема
@@ -79,6 +84,25 @@ struct SettingsView: View {
                             Image(systemName: "rectangle.portrait.and.arrow.right")
                                 .foregroundColor(.red)
                         }
+                    }
+                }
+                
+                Section("Уведомления") {
+                    Toggle("Уведомления о достижении целей", isOn: $pushNotificationsEnabled)
+                        .onChange(of: pushNotificationsEnabled) { isEnabled in
+                            if isEnabled {
+                                GoalNotificationManager.shared.requestPermission()
+                            } else {
+                                UNUserNotificationCenter.current().removeAllPendingNotificationRequests()
+                            }
+                        }
+                }
+                
+                // Добавляем кнопку для тестирования уведомлений
+                Section {
+                    Button("Test Notification") {
+                        let testGoal = FinancialGoal(name: "Test Goal", targetAmount: 1000, currentAmount: 1000, deadline: Date())
+                        GoalNotificationManager.shared.notifyGoalAchieved(for: testGoal)
                     }
                 }
             }
@@ -147,6 +171,7 @@ struct GoalRow: View {
     @State private var showingDeleteAlert = false
     @State private var showingAddFundsSheet = false
     @State private var amountToAdd = ""
+    @State private var pushNotificationsEnabled = false
     
     var body: some View {
         VStack(alignment: .leading, spacing: 8) {
@@ -202,6 +227,11 @@ struct GoalRow: View {
                 Text("Цель достигнута! 🎉")
                     .font(.caption)
                     .foregroundColor(.green)
+                    .onAppear {
+                        if pushNotificationsEnabled {
+                            GoalNotificationManager.shared.notifyGoalAchieved(for: goal)
+                        }
+                    }
             }
         }
         .sheet(isPresented: $showingEditSheet) {

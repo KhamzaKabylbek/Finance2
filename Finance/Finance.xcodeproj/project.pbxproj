@@ -7,6 +7,7 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		78618DAA2D762E56000B1425 /* UIImage+PDF.swift in Sources */ = {isa = PBXBuildFile; fileRef = 78618DA92D762E56000B1425 /* UIImage+PDF.swift */; };
 		BB023B992D3D6D36000C297F /* Color+Extensions.swift in Sources */ = {isa = PBXBuildFile; fileRef = BB023B982D3D6D36000C297F /* Color+Extensions.swift */; };
 		BB023B9E2D3D7F91000C297F /* NotificationManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = BB023B9C2D3D7F91000C297F /* NotificationManager.swift */; };
 		BB20F00C2D397A26005BEA39 /* FinanceApp.swift in Sources */ = {isa = PBXBuildFile; fileRef = BB20F00B2D397A26005BEA39 /* FinanceApp.swift */; };
@@ -46,6 +47,7 @@
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
+		78618DA92D762E56000B1425 /* UIImage+PDF.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "UIImage+PDF.swift"; sourceTree = "<group>"; };
 		BB023B982D3D6D36000C297F /* Color+Extensions.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "Color+Extensions.swift"; sourceTree = "<group>"; };
 		BB023B9C2D3D7F91000C297F /* NotificationManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NotificationManager.swift; sourceTree = "<group>"; };
 		BB20F00B2D397A26005BEA39 /* FinanceApp.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FinanceApp.swift; sourceTree = "<group>"; };
@@ -155,6 +157,7 @@
 		BB9958E02D091DA70048F4A1 /* Extensions */ = {
 			isa = PBXGroup;
 			children = (
+				78618DA92D762E56000B1425 /* UIImage+PDF.swift */,
 				BB023B982D3D6D36000C297F /* Color+Extensions.swift */,
 				BB9958DF2D091DA70048F4A1 /* Color+Hex.swift */,
 			);
@@ -362,6 +365,7 @@
 				BBB9373B2D2BDC9D00DA723A /* Message.swift in Sources */,
 				BB9958F12D092E5D0048F4A1 /* SettingsView.swift in Sources */,
 				BB9958E12D091DA70048F4A1 /* Color+Hex.swift in Sources */,
+				78618DAA2D762E56000B1425 /* UIImage+PDF.swift in Sources */,
 				BB20F0142D397E82005BEA39 /* Debtor.swift in Sources */,
 				BBA5578F2D0B9764001A1AF4 /* FinancialGoal.swift in Sources */,
 				BBA557942D0B9785001A1AF4 /* GoalProgressView.swift in Sources */,

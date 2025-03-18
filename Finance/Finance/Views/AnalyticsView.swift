@@ -37,11 +37,15 @@ struct AnalyticsView: View {
         let expenses = filteredTransactions.filter { $0.type == .expense }
         var categoryTotals: [Category: Double] = [:]
         
+        // Группируем все расходы по категориям
         for expense in expenses {
             categoryTotals[expense.category, default: 0] += expense.amount
         }
         
-        return categoryTotals.sorted { $0.value > $1.value }
+        // Сортируем результаты по сумме (от большей к меньшей)
+        return categoryTotals
+            .map { ($0.key, $0.value) }
+            .sorted { $0.1 > $1.1 }
     }
     
     var totalIncome: Double {
@@ -307,16 +311,55 @@ struct StatCard: View {
 struct PieChartView: View {
     let data: [(Category, Double)]
     
+    // Группируем данные по категориям для диаграммы
+    private var chartData: [(name: String, amount: Double, color: String)] {
+        var totals: [String: (name: String, amount: Double, color: String)] = [:]
+        
+        // Суммируем все расходы по каждой категории
+        for (category, amount) in data {
+            let key = category.name
+            if let existing = totals[key] {
+                totals[key] = (name: key, amount: existing.amount + amount, color: category.color)
+            } else {
+                totals[key] = (name: category.name, amount: amount, color: category.color)
+            }
+        }
+        
+        // Добавляем новые категории и обновляем существующие
+        for (category, amount) in data {
+            let key = category.name
+            totals[key, default: (name: key, amount: 0, color: category.color)].amount += amount
+        }
+        
+        // Сортируем по убыванию суммы
+        return totals.values.sorted { $0.amount > $1.amount }
+    }
+    
+    private var total: Double {
+        chartData.reduce(0) { $0 + $1.amount }
+    }
+    
     var body: some View {
         Chart {
-            ForEach(data, id: \.0.id) { item in
+            ForEach(chartData, id: \.name) { item in
                 SectorMark(
-                    angle: .value("Сумма", item.1),
+                    angle: .value("Сумма", item.amount),
                     innerRadius: .ratio(0.618),
                     angularInset: 1.5
                 )
                 .cornerRadius(4)
-                .foregroundStyle(Color(hex: item.0.color))
+                .foregroundStyle(Color(hex: item.color))
+                .annotation(position: .overlay) {
+                    if (item.amount / total) > 0.05 {
+                        Text("\(item.name)\n\(Int((item.amount / total) * 100))%")
+                            .font(.caption)
+                            .foregroundColor(.white)
+                            .multilineTextAlignment(.center)
+                            .padding(4)
+                            .background(Color.gray.opacity(0.7)) // Updated background color to gray
+                            .cornerRadius(4)
+                    }
+                }
             }
         }
         .padding()
@@ -334,6 +377,11 @@ struct BarChartView: View {
                     y: .value("Сумма", item.1)
                 )
                 .foregroundStyle(Color(hex: item.0.color))
+                .annotation(position: .top) {
+                    Text("\(item.1, specifier: "%.2f")")
+                        .font(.caption)
+                        .foregroundColor(.primary)
+                }
             }
         }
         .padding()
@@ -383,6 +431,11 @@ struct LineChartView: View {
                         y: .value("Сумма", item.1)
                     )
                     .foregroundStyle(.blue)
+                    .annotation(position: .top) {
+                        Text("\(item.1, specifier: "%.2f")")
+                            .font(.caption)
+                            .foregroundColor(.primary)
+                    }
                 }
             }
             .padding()
@@ -484,4 +537,4 @@ struct CategoryAnalysisRow: View {
         }
         .padding(.vertical, 4)
     }
-} 
+}
