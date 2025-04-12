@@ -87,24 +87,24 @@ struct SettingsView: View {
                     }
                 }
                 
-                Section("Уведомления") {
-                    Toggle("Уведомления о достижении целей", isOn: $pushNotificationsEnabled)
-                        .onChange(of: pushNotificationsEnabled) { isEnabled in
-                            if isEnabled {
-                                GoalNotificationManager.shared.requestPermission()
-                            } else {
-                                UNUserNotificationCenter.current().removeAllPendingNotificationRequests()
-                            }
-                        }
-                }
+//                Section("Уведомления") {
+//                    Toggle("Уведомления о достижении целей", isOn: $pushNotificationsEnabled)
+//                        .onChange(of: pushNotificationsEnabled) { isEnabled in
+//                            if isEnabled {
+//                                GoalNotificationManager.shared.requestPermission()
+//                            } else {
+//                                UNUserNotificationCenter.current().removeAllPendingNotificationRequests()
+//                            }
+//                        }
+//                }
                 
                 // Добавляем кнопку для тестирования уведомлений
-                Section {
-                    Button("Test Notification") {
-                        let testGoal = FinancialGoal(name: "Test Goal", targetAmount: 1000, currentAmount: 1000, deadline: Date())
-                        GoalNotificationManager.shared.notifyGoalAchieved(for: testGoal)
-                    }
-                }
+//                Section {
+//                    Button("Test Notification") {
+//                        let testGoal = FinancialGoal(name: "Test Goal", targetAmount: 1000, currentAmount: 1000, deadline: Date())
+//                        GoalNotificationManager.shared.notifyGoalAchieved(for: testGoal)
+//                    }
+//                }
             }
             .navigationTitle("Настройки")
             .navigationBarTitleDisplayMode(.inline)
@@ -228,9 +228,9 @@ struct GoalRow: View {
                     .font(.caption)
                     .foregroundColor(.green)
                     .onAppear {
-                        if pushNotificationsEnabled {
-                            GoalNotificationManager.shared.notifyGoalAchieved(for: goal)
-                        }
+//                        if pushNotificationsEnabled {
+//                            GoalNotificationManager.shared.notifyGoalAchieved(for: goal)
+//                        }
                     }
             }
         }
