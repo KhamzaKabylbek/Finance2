@@ -121,6 +121,10 @@ struct AIChatView: View {
                                 .foregroundColor(.red)
                         }
                     )
+                    .onAppear {
+                        loadMessages() // Load messages when the view appears
+                        setupSuggestions()
+                    }
                 }
             } else {
                 ProgressView("Инициализация...")
@@ -128,9 +132,6 @@ struct AIChatView: View {
                         initializeServices()
                     }
             }
-        }
-        .onAppear {
-            setupSuggestions()
         }
     }
     
@@ -201,12 +202,12 @@ struct AIChatView: View {
     private func addMessage(_ text: String, isUser: Bool) {
         let message = ChatMessage(text: text, isUser: isUser)
         messages.append(message)
-        saveMessages()
+        saveMessages() // Save messages after adding a new one
     }
     
     private func clearHistory() {
         messages.removeAll()
-        saveMessages()
+        saveMessages() // Save empty state to clear history
     }
     
     private func sendMessage() async {
@@ -216,25 +217,42 @@ struct AIChatView: View {
             showingAlert = true
             return
         }
-        
+
         let messageText = newMessage
+        let transactionsCSV = generateCSVContent() // Generate CSV content for all transactions
+        let currentBalance = store.formatAmount(store.totalBalance) // Get current balance
+        let totalIncome = store.transactions
+            .filter { $0.type == .income }
+            .reduce(0) { $0 + $1.amount } // Calculate total income
+
+        let fullPrompt = """
+        Вот мои данные:
+        - Текущий баланс: \(currentBalance)
+        - Общий доход: \(store.formatAmount(totalIncome))
         
+        Вот мои транзакции:
+        \(transactionsCSV)
+        
+        Теперь ответь на мой запрос:
+        \(messageText)
+        """
+
         await MainActor.run {
-            addMessage(messageText, isUser: true)
+            addMessage(messageText, isUser: true) // Save user message
             newMessage = ""
             isLoading = true
         }
-        
+
         do {
-            let response = try await geminiService.generateResponse(for: messageText)
-            
+            let response = try await geminiService.generateResponse(for: fullPrompt)
+
             if response.isEmpty {
                 throw NSError(domain: "AIChatView", code: 2, 
                             userInfo: [NSLocalizedDescriptionKey: "Получен пустой ответ от сервиса"])
             }
-            
+
             await MainActor.run {
-                addMessage(response, isUser: false)
+                addMessage(response, isUser: false) // Save AI response
                 isLoading = false
             }
         } catch {
@@ -246,22 +264,16 @@ struct AIChatView: View {
             }
         }
     }
-    
-    private func setupSuggestions() {
-        suggestions = [
-            ChatSuggestion(text: "📊 Анализ расходов и доходов", action: {
-                await analyzeExpenses()
-            }),
-            ChatSuggestion(text: "💡 Советы по экономии денег", action: {
-                await sendMessage(withText: "Дай мне общие советы по экономии денег")
-            }),
-            ChatSuggestion(text: "📈 Как ставить финансовые цели", action: {
-                await sendMessage(withText: "Как правильно ставить финансовые цели?")
-            }),
-            ChatSuggestion(text: "💰 Как составить бюджет", action: {
-                await sendMessage(withText: "Как составить эффективный бюджет?")
-            })
-        ]
+
+    private func generateCSVContent() -> String {
+        var csvString = "Дата,Категория,Тип,Сумма,Заметка\n"
+        
+        for transaction in store.transactions {
+            let row = "\(formatDate(transaction.date)),\(transaction.category.name),\(transaction.type.rawValue),\(transaction.amount),\"\(transaction.note)\"\n"
+            csvString.append(row)
+        }
+        
+        return csvString
     }
     
     private func analyzeExpenses() async {
@@ -343,6 +355,23 @@ struct AIChatView: View {
             newMessage = text
         }
         await sendMessage()
+    }
+
+    private func setupSuggestions() {
+        suggestions = [
+            ChatSuggestion(text: "📊 Анализ расходов и доходов", action: {
+                await analyzeExpenses()
+            }),
+            ChatSuggestion(text: "💡 Советы по экономии денег", action: {
+                await sendMessage(withText: "Дай мне общие советы по экономии денег")
+            }),
+            ChatSuggestion(text: "📈 Как ставить финансовые цели", action: {
+                await sendMessage(withText: "Как правильно ставить финансовые цели?")
+            }),
+            ChatSuggestion(text: "💰 Как составить бюджет", action: {
+                await sendMessage(withText: "Как составить эффективный бюджет?")
+            })
+        ]
     }
 }
 
