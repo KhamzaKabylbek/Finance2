@@ -52,6 +52,14 @@ struct LoginView: View {
             }
             .padding(.horizontal)
             
+            if let errorMessage = authViewModel.errorMessage {
+                Text(errorMessage)
+                    .foregroundColor(.red)
+                    .font(.subheadline)
+                    .multilineTextAlignment(.center)
+                    .padding(.horizontal)
+            }
+            
             VStack(spacing: 16) {
                 Button(action: validateAndLogin) {
                     ZStack {
