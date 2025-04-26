@@ -3,10 +3,10 @@ import SwiftUI
 struct RegisterView: View {
     @State private var email: String = ""
     @State private var password: String = ""
-    @State private var confirmPassword: String = ""
+    @State private var fullName: String = ""
     @State private var emailError: String? = nil
     @State private var passwordError: String? = nil
-    @State private var confirmPasswordError: String? = nil
+    @State private var fullNameError: String? = nil
     @Environment(\.presentationMode) var presentationMode
     @EnvironmentObject var authViewModel: AuthViewModel
     
@@ -23,6 +23,13 @@ struct RegisterView: View {
                     .font(.system(size: 28, weight: .bold))
                 
                 CustomTextField(
+                    title: "Полное имя",
+                    text: $fullName,
+                    isSecure: false,
+                    errorMessage: fullNameError
+                ).font(.system(size: 22))
+                
+                CustomTextField(
                     title: "Email",
                     text: $email,
                     isSecure: false,
@@ -34,13 +41,6 @@ struct RegisterView: View {
                     text: $password,
                     isSecure: true,
                     errorMessage: passwordError
-                ).font(.system(size: 22))
-                
-                CustomTextField(
-                    title: "Подтвердите пароль",
-                    text: $confirmPassword,
-                    isSecure: true,
-                    errorMessage: confirmPasswordError
                 ).font(.system(size: 22))
                 
                 VStack(spacing: 16) {
@@ -82,7 +82,12 @@ struct RegisterView: View {
     private func validateAndRegister() {
         emailError = nil
         passwordError = nil
-        confirmPasswordError = nil
+        fullNameError = nil
+        
+        if fullName.isEmpty {
+            fullNameError = "Введите полное имя"
+            return
+        }
         
         if !ValidationManager.isValidEmail(email) {
             emailError = "Введите корректный email"
@@ -91,11 +96,6 @@ struct RegisterView: View {
         
         if let passError = ValidationManager.getPasswordErrorMessage(password) {
             passwordError = passError
-            return
-        }
-        
-        if password != confirmPassword {
-            confirmPasswordError = "Пароли не совпадают"
             return
         }
         
